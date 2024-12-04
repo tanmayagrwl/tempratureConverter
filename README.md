@@ -15,8 +15,7 @@ A simple and intuitive temperature converter iOS application built with Swift th
 
 ## Screenshots
 
-<img src="https://github.com/user-attachments/assets/36ef5f7f-38a0-445b-8506-b26e675c4c6b" height="500">
-
+<img width="300" alt="Screenshot 2024-12-04 at 3 31 55 PM" src="https://github.com/user-attachments/assets/aaf5aa75-6fd9-4f3b-8792-26100fb97e6d">
 
 ## Requirements
 
