@@ -4,57 +4,67 @@
 //
 //  Created by Tanmay Agrawal on 16/11/24.
 //
-
 import SwiftUI
 
 struct ContentView: View {
     @State private var inputTemp = 0.0
-    @State private var inputTempratureFormat = "K"
-    @State private var outputTempratureFormat = "K"
-    @State private var middleTemp = 0.0
-    let typesOfTemp = ["°F","°C", "K"]
-
-    var body: some View {
-        var outputTemp:Double{
-            if(inputTempratureFormat == "°C" ){
-                middleTemp = inputTemp*1.8 + 32
-            } else if(inputTempratureFormat == "K"){
-                middleTemp = (inputTemp - 273.15 ) * 1.8 + 32
-            } else {
-                middleTemp = inputTemp
-            }
-            
-            if(outputTempratureFormat == "°C"){
-               return (middleTemp - 32) * 5/9
-            } else if (outputTempratureFormat == "K"){
-                return (middleTemp + 459.67) * 5/9
-            } else {
-                return middleTemp
-            }
+    @State private var inputTemperatureFormat = "K"
+    @State private var outputTemperatureFormat = "K"
+    let typesOfTemp = ["°F", "°C", "K"]
+    
+    // Function to convert temperatures
+    private func convertTemperature() -> Double {
+        // First convert to Fahrenheit as an intermediate step
+        let fahrenheit: Double
+        
+        switch inputTemperatureFormat {
+        case "°C":
+            fahrenheit = inputTemp * 9/5 + 32
+        case "K":
+            fahrenheit = (inputTemp * 9/5) - 459.67
+        default: // °F
+            fahrenheit = inputTemp
         }
         
-        NavigationStack{
-            Form{
-                Section("Enter current Temprature"){
-                    TextField("Enter Temprature", value: $inputTemp, format: .number).keyboardType(.decimalPad)
+        // Convert from Fahrenheit to target temperature
+        switch outputTemperatureFormat {
+        case "°C":
+            return (fahrenheit - 32) * 5/9
+        case "K":
+            return (fahrenheit + 459.67) * 5/9
+        default: // °F
+            return fahrenheit
+        }
+    }
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Enter Temperature") {
+                    TextField("Enter Temperature", value: $inputTemp, format: .number)
+                        .keyboardType(.decimalPad)
                     
-                    Picker("Temprature", selection: $inputTempratureFormat){
-                        ForEach(typesOfTemp, id: \.self){
+                    Picker("Input Format", selection: $inputTemperatureFormat) {
+                        ForEach(typesOfTemp, id: \.self) {
                             Text($0)
                         }
-                    }.pickerStyle(.palette)
+                    }
+                    .pickerStyle(.segmented)
                 }
-                Section("Converted Temprature"){
-                    Text(outputTemp, format: .number)
-                    Picker("Temprature", selection: $outputTempratureFormat){
-                        ForEach(typesOfTemp, id:\.self){
+                
+                Section("Converted Temperature") {
+                    Text(convertTemperature().formatted(.number.precision(.fractionLength(2))) + " " + outputTemperatureFormat)
+                    
+                    Picker("Output Format", selection: $outputTemperatureFormat) {
+                        ForEach(typesOfTemp, id: \.self) {
                             Text($0)
                         }
-                    }                }
-                .pickerStyle(.palette)
+                    }
+                    .pickerStyle(.segmented)
+                }
             }
-            
-            .navigationTitle("Temprature Converter").navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Temperature Converter")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
